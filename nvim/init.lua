@@ -1,0 +1,148 @@
+-- General options
+vim.opt.relativenumber = true
+vim.opt.number = true
+vim.opt.wrap = false
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.smartcase = true
+vim.opt.ignorecase = true
+vim.opt.signcolumn = 'yes'
+vim.opt.winborder = 'rounded'
+vim.opt.clipboard:append("unnamedplus")
+vim.opt.swapfile = false
+vim.opt.scrolloff = 15
+vim.g.mapleader = " "
+
+-- General keymaps
+vim.keymap.set('n', '<leader>o', ':update<CR> :source<CR>', { desc = 'S[o]urce config' })
+vim.keymap.set('n', '<leader>w', ':update<CR>', { desc = '[W]rite file' })
+vim.keymap.set('n', '<leader>q', ':quit<CR>', { desc = '[Q]uit' })
+vim.keymap.set('n', '<leader>hp', "<cmd>Gitsigns preview_hunk<CR>", { desc = "[P]review Git Hunk" })
+vim.keymap.set('n', '<leader>hd', '<cmd>DiffviewOpen<CR>', { desc = 'Open Git [D]iff View' })
+vim.keymap.set('n', '<leader>hb', "<cmd>Gitsigns blame_line<CR>", { desc = "[B]lame Current Line" })
+vim.keymap.set('n', '<leader>hn', "<cmd>Gitsigns next_hunk<CR>", { desc = "Git Hunk [N]ext" })
+vim.keymap.set('n', '<leader>hN', "<cmd>Gitsigns prev_hunk<CR>", { desc = "Git Hunk  Previous" })
+vim.keymap.set('n', '<leader>r', "<Cmd>Pick buffers<Cr>", { desc = '[r]ecent buffers' })
+vim.keymap.set('n', '<leader>f', "<Cmd>Pick files<Cr>", { desc = 'pick [f]iles' })
+vim.keymap.set('n', '<leader>g', "<Cmd>Pick grep_live<Cr>", { desc = '[g]rep (live)' })
+vim.keymap.set('n', '<leader>v', '<Cmd>e $MYVIMRC<CR>', { desc = "[v]imrc" })
+vim.keymap.set('n', '<leader>c', ':bdelete<CR>', { desc = '[c]lose buffer' })
+vim.keymap.set('n', '<leader><leader>', '<Cmd>b#<CR>', { desc = 'Switch to last buffer' })
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Clear search highlight' })
+
+-- Mini.files explorer
+vim.keymap.set('n', '<leader>e', function()
+	require('mini.files').open()
+end, { desc = 'open [e]xplorer' })
+
+-- Visual feedback on yank
+vim.api.nvim_create_autocmd('TextYankPost', {
+	callback = function()
+		vim.highlight.on_yank({ higroup = 'Visual', timeout = 200 })
+	end,
+})
+
+-- Plugins (and colorschemes)
+vim.pack.add({
+	-- Colorschemes
+	--	{ src = "https://github.com/vague-theme/vague.nvim" },
+	--	{ src = "https://github.com/dracula/vim" },
+	{ src = "https://github.com/catppuccin/nvim" },
+	-- Plugins
+	{ src = "https://github.com/nvim-mini/mini.nvim" },
+	{ src = "https://github.com/neovim/nvim-lspconfig" },
+	{ src = "https://github.com/mason-org/mason.nvim" },
+	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
+	{ src = "https://github.com/sindrets/diffview.nvim" },
+	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
+	{ src = "https://github.com/chomosuke/typst-preview.nvim" },
+})
+
+-- Set colorscheme
+vim.cmd.colorscheme('catppuccin-frappe')
+
+-- Set up mini plugins
+require "mini.completion".setup()
+require('mini.notify').setup()
+require "mini.pick".setup()
+require "mini.icons".setup()
+require "mini.git".setup()
+require "mini.statusline".setup()
+require "mini.pairs".setup()
+require "mini.indentscope".setup()
+require "mini.files".setup({
+	windows = {
+		preview = true,
+		width_preview = 50,
+	},
+})
+require "mini.clue".setup({
+	triggers = {
+		{ mode = 'n', keys = '<Leader>' },
+	}
+})
+
+-- LSP Configutation
+-- Show diganostics inline
+vim.diagnostic.config({ virtual_text = true })
+-- :Mason to install LSPs manually
+require "mason".setup()
+
+-- Enable LSP servers
+vim.lsp.enable({ "lua_ls", "ruff", "pyright", "clangd", "jdtls", "ts_ls", "tinymist", "gopls" })
+
+-- Custom settings for LSPs
+vim.lsp.config("lua_ls", {
+	settings = {
+		Lua = {
+			diagnostics = {
+				globals = { "vim" } }
+		}
+	}
+})
+
+vim.lsp.config("clangd", {
+	cmd = {
+		"clangd",
+		"--clang-tidy",
+	},
+})
+
+vim.lsp.config("tinymist", {
+	cmd = { "tinymist" },
+	filetypes = { "typst" },
+	formatterMode = "typstyle"
+})
+
+vim.api.nvim_create_autocmd('LspAttach', {
+	group = vim.api.nvim_create_augroup('LspConfig', { clear = true }),
+	desc = 'LSP actions',
+	callback = function(event)
+		-- Create notification to show attached LSP
+		local client = vim.lsp.get_client_by_id(event.data.client_id)
+		if client then
+			vim.notify('LSP: ' .. client.name, vim.log.levels.INFO)
+		end
+		-- Create buffer-local keymaps for the current buffer
+		local map = function(keys, func, desc)
+			vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+		end
+		-- Buffer-local LSP keymaps
+		map('<leader>lf', vim.lsp.buf.format, '[f]ormat')
+		map('<leader>ld', vim.lsp.buf.definition, '[d]efinition')
+		map('<leader>lr', vim.lsp.buf.references, '[r]eferences')
+		map('<leader>ln', vim.lsp.buf.rename, 're[n]ame')
+		map('<leader>la', vim.lsp.buf.code_action, 'code [a]ction (how to fix)')
+		map('<leader>le', vim.diagnostic.open_float, '[e]rror diagnostics')
+		map('<leader>lh', vim.lsp.buf.hover, '[h]over documentation')
+		-- map('<leader>li', vim.lsp.buf.implementation, '[i]mplementation')
+	end,
+})
+
+-- Treesitter config
+require('nvim-treesitter.configs').setup({
+	auto_install = true,
+	highlight = {
+		enable = true,
+	},
+})
