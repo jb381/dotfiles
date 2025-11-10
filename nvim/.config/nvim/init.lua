@@ -63,13 +63,53 @@ vim.cmd.colorscheme('catppuccin-frappe')
 
 -- Set up mini plugins
 require "mini.completion".setup()
-require('mini.notify').setup()
 require "mini.pick".setup()
 require "mini.icons".setup()
 require "mini.git".setup()
-require "mini.statusline".setup()
 require "mini.pairs".setup()
 require "mini.indentscope".setup()
+
+-- Custom statusline with attached LSP & time
+local MiniStatusline = require("mini.statusline")
+
+MiniStatusline.setup({
+	content = {
+		active = function()
+			local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
+			local git           = MiniStatusline.section_git({ trunc_width = 40 })
+			local diff          = MiniStatusline.section_diff({ trunc_width = 75 })
+			local diagnostics   = MiniStatusline.section_diagnostics({ trunc_width = 75 })
+			local filename      = MiniStatusline.section_filename({ trunc_width = 140 })
+			local fileinfo      = MiniStatusline.section_fileinfo({ trunc_width = 120 })
+			-- local location      = MiniStatusline.section_location({ trunc_width = 75 })
+			-- local search        = MiniStatusline.section_searchcount({ trunc_width = 75 })
+
+			-- Custom LSP part
+			local clients       = vim.lsp.get_clients({ bufnr = 0 })
+			local names         = {}
+			for _, client in ipairs(clients) do
+				table.insert(names, client.name)
+			end
+			local lsp = #names > 0 and ("\u{f013} " .. table.concat(names, ", ")) or " None"
+
+			-- Custom Time
+			local time = os.date("%H:%M")
+
+			return MiniStatusline.combine_groups({
+				{ hl = mode_hl,                 strings = { mode } },
+				{ hl = 'MiniStatuslineDevinfo', strings = { git, diff, diagnostics } },
+				'%<',
+				{ hl = 'MiniStatuslineFilename', strings = { filename } },
+				'%=',
+				{ hl = 'MiniStatuslineFilename', strings = { lsp } },
+				{ hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
+				{ hl = mode_hl,                  strings = { time } },
+				-- { hl = mode_hl,                  strings = { search, location } },
+			})
+		end,
+	}
+})
+
 require "mini.files".setup({
 	windows = {
 		preview = true,
@@ -118,11 +158,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 	group = vim.api.nvim_create_augroup('LspConfig', { clear = true }),
 	desc = 'LSP actions',
 	callback = function(event)
-		-- Create notification to show attached LSP
-		local client = vim.lsp.get_client_by_id(event.data.client_id)
-		if client then
-			vim.notify('LSP: ' .. client.name, vim.log.levels.INFO)
-		end
 		-- Create buffer-local keymaps for the current buffer
 		local map = function(keys, func, desc)
 			vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
