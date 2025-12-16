@@ -17,11 +17,6 @@ vim.g.mapleader = " "
 vim.keymap.set('n', '<leader>o', ':update<CR> :source<CR>', { desc = 'S[o]urce config' })
 vim.keymap.set('n', '<leader>w', ':update<CR>', { desc = '[W]rite file' })
 vim.keymap.set('n', '<leader>q', ':quit<CR>', { desc = '[Q]uit' })
-vim.keymap.set('n', '<leader>hp', "<cmd>Gitsigns preview_hunk<CR>", { desc = "[P]review Git Hunk" })
-vim.keymap.set('n', '<leader>hd', '<cmd>DiffviewOpen<CR>', { desc = 'Open Git [D]iff View' })
-vim.keymap.set('n', '<leader>hb', "<cmd>Gitsigns blame_line<CR>", { desc = "[B]lame Current Line" })
-vim.keymap.set('n', '<leader>hn', "<cmd>Gitsigns next_hunk<CR>", { desc = "Git Hunk [N]ext" })
-vim.keymap.set('n', '<leader>hN', "<cmd>Gitsigns prev_hunk<CR>", { desc = "Git Hunk  Previous" })
 vim.keymap.set('n', '<leader>r', "<Cmd>Pick buffers<Cr>", { desc = '[r]ecent buffers' })
 vim.keymap.set('n', '<leader>f', "<Cmd>Pick files<Cr>", { desc = 'pick [f]iles' })
 vim.keymap.set('n', '<leader>g', "<Cmd>Pick grep_live<Cr>", { desc = '[g]rep (live)' })
@@ -29,6 +24,12 @@ vim.keymap.set('n', '<leader>v', '<Cmd>e $MYVIMRC<CR>', { desc = "[v]imrc" })
 vim.keymap.set('n', '<leader>c', ':bdelete<CR>', { desc = '[c]lose buffer' })
 vim.keymap.set('n', '<leader><leader>', '<Cmd>b#<CR>', { desc = 'Switch to last buffer' })
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Clear search highlight' })
+-- Git related
+vim.keymap.set('n', '<leader>hp', "<cmd>Gitsigns preview_hunk<CR>", { desc = "[P]review Git Hunk" })
+vim.keymap.set('n', '<leader>hb', "<cmd>Gitsigns blame_line<CR>", { desc = "[B]lame Current Line" })
+vim.keymap.set('n', '<leader>hn', "<cmd>Gitsigns next_hunk<CR>", { desc = "Git Hunk [n]ext" })
+vim.keymap.set('n', '<leader>hN', "<cmd>Gitsigns prev_hunk<CR>", { desc = "Git Hunk  Previous" })
+vim.keymap.set('n', '<leader>hg', '<cmd>LazyGit<CR>', { desc = 'Open lazy[g]it' })
 
 -- Mini.files explorer
 vim.keymap.set('n', '<leader>e', function()
@@ -53,7 +54,7 @@ vim.pack.add({
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
 	{ src = "https://github.com/mason-org/mason.nvim" },
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
-	{ src = "https://github.com/sindrets/diffview.nvim" },
+	{ src = "https://github.com/kdheepak/lazygit.nvim" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/chomosuke/typst-preview.nvim" },
 })
@@ -125,11 +126,11 @@ require "mini.clue".setup({
 -- LSP Configutation
 -- Show diganostics inline
 vim.diagnostic.config({ virtual_text = true })
--- :Mason to install LSPs manually
+-- :Mason -> vim.lsp.enable() → vim.lsp.config() overrides (if needed) -> LspAttach
 require "mason".setup()
 
 -- Enable LSP servers
-vim.lsp.enable({ "lua_ls", "ruff", "pyright", "clangd", "jdtls", "ts_ls", "tinymist", "gopls" })
+vim.lsp.enable({ "lua_ls", "ruff", "ty", "pyright", "clangd", "jdtls", "ts_ls", "tinymist", "gopls"})
 
 -- Custom settings for LSPs
 vim.lsp.config("lua_ls", {
