@@ -8,7 +8,7 @@ vim.opt.smartcase = true
 vim.opt.ignorecase = true
 vim.opt.signcolumn = 'yes'
 vim.opt.winborder = 'rounded'
-vim.opt.clipboard:append("unnamedplus")
+vim.opt.clipboard = 'unnamedplus'
 vim.opt.swapfile = false
 vim.opt.scrolloff = 15
 vim.g.mapleader = " "
@@ -24,6 +24,7 @@ vim.keymap.set('n', '<leader>v', '<Cmd>e $MYVIMRC<CR>', { desc = "[v]imrc" })
 vim.keymap.set('n', '<leader>c', ':bdelete<CR>', { desc = '[c]lose buffer' })
 vim.keymap.set('n', '<leader><leader>', '<Cmd>b#<CR>', { desc = 'Switch to last buffer' })
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Clear search highlight' })
+
 -- Git related
 vim.keymap.set('n', '<leader>hp', "<cmd>Gitsigns preview_hunk<CR>", { desc = "[P]review Git Hunk" })
 vim.keymap.set('n', '<leader>hb', "<cmd>Gitsigns blame_line<CR>", { desc = "[B]lame Current Line" })
@@ -32,9 +33,7 @@ vim.keymap.set('n', '<leader>hN', "<cmd>Gitsigns prev_hunk<CR>", { desc = "Git H
 vim.keymap.set('n', '<leader>hg', '<cmd>LazyGit<CR>', { desc = 'Open lazy[g]it' })
 
 -- Mini.files explorer
-vim.keymap.set('n', '<leader>e', function()
-	require('mini.files').open()
-end, { desc = 'open [e]xplorer' })
+vim.keymap.set('n', '<leader>e', function() require('mini.files').open() end, { desc = 'open [e]xplorer' })
 
 -- Visual feedback on yank
 vim.api.nvim_create_autocmd('TextYankPost', {
@@ -111,12 +110,6 @@ MiniStatusline.setup({
 	}
 })
 
-require "mini.files".setup({
-	windows = {
-		preview = true,
-		width_preview = 50,
-	},
-})
 require "mini.clue".setup({
 	triggers = {
 		{ mode = 'n', keys = '<Leader>' },
@@ -130,7 +123,7 @@ vim.diagnostic.config({ virtual_text = true })
 require "mason".setup()
 
 -- Enable LSP servers
-vim.lsp.enable({ "lua_ls", "ruff", "ty", "pyright", "clangd", "jdtls", "ts_ls", "tinymist", "gopls"})
+vim.lsp.enable({ "lua_ls", "ruff", "ty", "pyright", "clangd", "jdtls", "ts_ls", "tinymist", "gopls" })
 
 -- Custom settings for LSPs
 vim.lsp.config("lua_ls", {
