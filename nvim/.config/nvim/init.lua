@@ -25,7 +25,7 @@ vim.keymap.set('n', '<leader>c', ':bdelete<CR>', { desc = '[c]lose buffer' })
 vim.keymap.set('n', '<leader><leader>', '<Cmd>b#<CR>', { desc = 'Switch to last buffer' })
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Clear search highlight' })
 
--- Git related
+-- Git related (hunks + lazygit)
 vim.keymap.set('n', '<leader>hp', "<cmd>Gitsigns preview_hunk<CR>", { desc = "[P]review Git Hunk" })
 vim.keymap.set('n', '<leader>hb', "<cmd>Gitsigns blame_line<CR>", { desc = "[B]lame Current Line" })
 vim.keymap.set('n', '<leader>hn', "<cmd>Gitsigns next_hunk<CR>", { desc = "Git Hunk [n]ext" })
@@ -62,12 +62,14 @@ vim.pack.add({
 vim.cmd.colorscheme('catppuccin-frappe')
 
 -- Set up mini plugins
-require "mini.completion".setup()
-require "mini.pick".setup()
-require "mini.icons".setup()
-require "mini.git".setup()
-require "mini.pairs".setup()
-require "mini.indentscope".setup()
+require "mini.completion".setup()	-- LSP-based completion
+require "mini.pick".setup()				-- Fuzzy finder (files, buffers, grep)
+require "mini.icons".setup()			-- Icons for UI elements
+require "mini.git".setup()				-- Lightweight Git integration (statusline)
+require "mini.pairs".setup()			-- Auto-close brackets/quotes
+require "mini.indentscope".setup()-- Indent scopes
+require "mini.ai".setup()					-- Smart textobjects (functions, classes, ...)
+require "mini.files".setup()			-- File explorer (like oil.nvim, in here to auto-open on 'nvim .')
 
 -- Custom statusline with attached LSP & time
 local MiniStatusline = require("mini.statusline")
@@ -116,10 +118,11 @@ require "mini.clue".setup({
 	}
 })
 
--- LSP Configutation
--- Show diganostics inline
+-- LSP Configutation: Mason downloads -> vim.lsp.enable() → vim.lsp.config() overrides (if needed) -> LspAttach keymaps
+-- Show diagnostics inline
 vim.diagnostic.config({ virtual_text = true })
--- :Mason -> vim.lsp.enable() → vim.lsp.config() overrides (if needed) -> LspAttach
+
+-- :Mason for manual downloads
 require "mason".setup()
 
 -- Enable LSP servers
