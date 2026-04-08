@@ -38,7 +38,7 @@ vim.keymap.set('n', '<leader>e', function() require('mini.files').open() end, { 
 -- Visual feedback on yank
 vim.api.nvim_create_autocmd('TextYankPost', {
 	callback = function()
-		vim.highlight.on_yank({ higroup = 'Visual', timeout = 200 })
+		vim.hl.on_yank({ higroup = 'Visual', timeout = 200 })
 	end,
 })
 
@@ -46,7 +46,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.pack.add({
 	-- Colorschemes
 	--	{ src = "https://github.com/vague-theme/vague.nvim" },
-	--	{ src = "https://github.com/dracula/vim" },
+	-- { src = "https://github.com/dracula/vim" },
+	-- { src = "https://github.com/ellisonleao/gruvbox.nvim" },
+	-- { src = "https://github.com/folke/tokyonight.nvim" },
 	{ src = "https://github.com/catppuccin/nvim" },
 	-- Plugins
 	{ src = "https://github.com/nvim-mini/mini.nvim" },
@@ -56,22 +58,30 @@ vim.pack.add({
 	{ src = "https://github.com/kdheepak/lazygit.nvim" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/chomosuke/typst-preview.nvim" },
+	{ src = "https://github.com/f-person/git-blame.nvim" },
+	--{ src = "https://github.com/OXY2DEV/markview.nvim" },
 })
+
+-- Set random colorscheme
+-- local schemes = { 'catppuccin-frappe', 'dracula', 'gruvbox', 'tokyonight' }
+-- math.randomseed(os.time())
+--vim.cmd.colorscheme(schemes[math.random(#schemes)])
 
 -- Set colorscheme
 vim.cmd.colorscheme('catppuccin-frappe')
 
 -- Set up mini plugins
-require "mini.completion".setup()	-- LSP-based completion
-require "mini.pick".setup()				-- Fuzzy finder (files, buffers, grep)
-require "mini.icons".setup()			-- Icons for UI elements
-require "mini.git".setup()				-- Lightweight Git integration (statusline)
-require "mini.pairs".setup()			-- Auto-close brackets/quotes
-require "mini.indentscope".setup()-- Indent scopes
-require "mini.ai".setup()					-- Smart textobjects (functions, classes, ...)
-require "mini.files".setup()			-- File explorer (like oil.nvim, in here to auto-open on 'nvim .')
+require "mini.completion".setup()  -- LSP-based completion
+require "mini.pick".setup()        -- Fuzzy finder (files, buffers, grep)
+require "mini.icons".setup()       -- Icons for UI elements
+require "mini.git".setup()         -- Lightweight Git integration (statusline)
+require "mini.pairs".setup()       -- Auto-close brackets/quotes
+require "mini.indentscope".setup() -- Indent scopes
+require "mini.ai".setup()          -- Smart textobjects (functions, classes, ...)
+require "mini.files".setup()       -- File explorer (like oil.nvim, in here to auto-open on 'nvim .')
 
 -- Custom statusline with attached LSP & time
+-- Setup can be reduced to one line if the standard MiniStatusline is desired
 local MiniStatusline = require("mini.statusline")
 
 MiniStatusline.setup({
