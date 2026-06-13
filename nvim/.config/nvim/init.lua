@@ -4,8 +4,8 @@ vim.opt.number = true
 vim.opt.wrap = false
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
-vim.opt.smartcase = true
 vim.opt.ignorecase = true
+vim.opt.smartcase = true
 vim.opt.signcolumn = 'yes'
 vim.opt.winborder = 'rounded'
 vim.opt.clipboard = 'unnamedplus'
@@ -14,7 +14,7 @@ vim.opt.scrolloff = 15
 vim.g.mapleader = " "
 
 -- General keymaps
-vim.keymap.set('n', '<leader>o', ':update<CR> :source<CR>', { desc = 'S[o]urce config' })
+vim.keymap.set('n', '<leader>o', ':update<CR> :luafile $MYVIMRC<CR>', { desc = 'S[o]urce config' })
 vim.keymap.set('n', '<leader>w', ':update<CR>', { desc = '[W]rite file' })
 vim.keymap.set('n', '<leader>q', ':quit<CR>', { desc = '[Q]uit' })
 vim.keymap.set('n', '<leader>r', "<Cmd>Pick buffers<Cr>", { desc = '[r]ecent buffers' })
@@ -128,7 +128,7 @@ require "mini.clue".setup({
 	}
 })
 
--- LSP Configutation: Mason downloads -> vim.lsp.enable() → vim.lsp.config() overrides (if needed) -> LspAttach keymaps
+-- LSP Configuration: Mason downloads -> vim.lsp.enable() → vim.lsp.config() overrides (if needed) -> LspAttach keymaps
 -- Show diagnostics inline
 vim.diagnostic.config({ virtual_text = true })
 
