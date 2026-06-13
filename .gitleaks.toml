@@ -1,0 +1,64 @@
+# .gitleaks.toml — allowlist for dotfiles
+# Dummy/placeholder values in config examples trigger false positives.
+# This file keeps the CI scan clean while still catching real secrets.
+
+title = "dotfiles gitleaks config"
+
+[extend]
+useDefault = true
+
+[[allowlist]]
+description = "Common false positives in dotfile configs"
+regexes = [
+  # Placeholder / example API keys, tokens, and secrets
+  ".*example.*key.*",
+  ".*dummy.*key.*",
+  ".*placeholder.*",
+  ".*YOUR_.*_HERE.*",
+  ".*your-key-here.*",
+  ".*changeme.*",
+  ".*<your-token>.*",
+  ".*<your-api-key>.*",
+]
+
+[[allowlist]]
+description = "Vim/Neovim and tmux config false positives"
+regexes = [
+  # Vim leader key (<space> etc.)
+  ".*<leader>.*",
+  # Git remote URLs (common in plugin manager lists)
+  ".*github\\.com/.*",
+  # Hex colour codes used in tmux config (e.g. colour236, #rrggbb)
+  ".*colour[0-9]+.*",
+  ".*#[0-9a-fA-F]{6}.*",
+  # LSP server names (look like tokens to some scanners)
+  ".*lsp.*config.*",
+  # Mason nvim package manager URLs
+  ".*mason-org/.*",
+]
+
+[[allowlist]]
+description = "Common regex and path patterns for dotfiles"
+paths = [
+  # Any .lua / .conf / .toml / .md files — config content, not secrets
+  ".*\\.lua$",
+  ".*\\.conf$",
+  ".*\\.toml$",
+  ".*\\.md$",
+  # The gitleaks config itself
+  ".gitleaks\\.toml$",
+]
+
+[[allowlist]]
+description = "Placeholder dummy tokens in documentation or example config"
+regexes = [
+  # Generic dummy values in configs
+  "xxxxx",
+  "12345",
+  "test",
+  "token",
+  "secret",
+  # Git references in config examples
+  "refs/heads/.*",
+  "refs/tags/.*",
+]
