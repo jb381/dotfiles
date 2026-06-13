@@ -7,8 +7,8 @@ title = "dotfiles gitleaks config"
 [extend]
 useDefault = true
 
-[[allowlist]]
-description = "Common false positives in dotfile configs"
+[allowlist]
+description = "Common dotfiles false positives"
 regexes = [
   # Placeholder / example API keys, tokens, and secrets
   ".*example.*key.*",
@@ -19,11 +19,6 @@ regexes = [
   ".*changeme.*",
   ".*<your-token>.*",
   ".*<your-api-key>.*",
-]
-
-[[allowlist]]
-description = "Vim/Neovim and tmux config false positives"
-regexes = [
   # Vim leader key (<space> etc.)
   ".*<leader>.*",
   # Git remote URLs (common in plugin manager lists)
@@ -35,23 +30,6 @@ regexes = [
   ".*lsp.*config.*",
   # Mason nvim package manager URLs
   ".*mason-org/.*",
-]
-
-[[allowlist]]
-description = "Common regex and path patterns for dotfiles"
-paths = [
-  # Any .lua / .conf / .toml / .md files — config content, not secrets
-  ".*\\.lua$",
-  ".*\\.conf$",
-  ".*\\.toml$",
-  ".*\\.md$",
-  # The gitleaks config itself
-  ".gitleaks\\.toml$",
-]
-
-[[allowlist]]
-description = "Placeholder dummy tokens in documentation or example config"
-regexes = [
   # Generic dummy values in configs
   "xxxxx",
   "12345",
@@ -61,4 +39,13 @@ regexes = [
   # Git references in config examples
   "refs/heads/.*",
   "refs/tags/.*",
+]
+paths = [
+  # Any .lua / .conf / .toml / .md files — config content, not secrets
+  ".*\\.lua$",
+  ".*\\.conf$",
+  ".*\\.toml$",
+  ".*\\.md$",
+  # The gitleaks config itself
+  ".gitleaks\\.toml$",
 ]
